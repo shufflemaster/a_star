@@ -15,6 +15,14 @@ static void findPath(const char * filename,
 {
 	Bitmap bmp(filename);
 	cout << "Got bmp of width:" << bmp.width() << ", height:" << bmp.height() << endl;
+
+	if (bmp.width() < 1) {
+		return;
+	}
+
+	char name[256];
+	snprintf(name, 256, "resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
+	bmp.saveAs(name);
 }
 
 int main()
