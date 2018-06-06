@@ -29,13 +29,6 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 		shared_ptr<Location> loc = mSearchQueue.front();
 		mSearchQueue.pop();
 
-		//Get the current color.
-		uint32_t locColor = bmp.getPixel(loc->mRow, loc->mCol);
-		if (locColor != EMPTY_COLOR) {
-			//This location is a wall.
-			continue;
-		}
-
 		if (*loc.get() == *endLoc.get()) {
 			//Found the path
 			buildThePath(startLoc, loc);
@@ -45,7 +38,6 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 
 		//Ok, this location has not been visited. Mark it blue.
 		if (paintSearch) bmp.setPixel(loc->mRow, loc->mCol, VISITED_COLOR);
-		mVisited[loc->mId] = true;
 
 		pushQueue(bmp, loc->mRow - 1, loc->mCol, loc);
 		pushQueue(bmp, loc->mRow - 1, loc->mCol + 1, loc);
@@ -55,6 +47,8 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 		pushQueue(bmp, loc->mRow + 1, loc->mCol - 1, loc);
 		pushQueue(bmp, loc->mRow,     loc->mCol - 1, loc);
 		pushQueue(bmp, loc->mRow - 1, loc->mCol - 1, loc);
+
+		mVisited[loc->mId] = true;
 	}
 
 	return mPath;
@@ -85,11 +79,25 @@ void PathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_ptr<Locat
 		return;
 	}
 
+	//Get the current color.
+	uint32_t locColor = bmp.getPixel(locRow, locCol);
+	if (locColor != EMPTY_COLOR) {
+		//This location is a wall.
+		return;
+	}
 
 	uint32_t locId = locRow * bmp.width() + locCol;
 
 	if (mVisited[locId]) {
 		//cout << "VISITED r:" << locRow << ", c:" << locCol << endl;
+		return;
+	}
+
+	//REMARK: It is essential to not only check if the device has been visited (code Above),
+	//but also it is important to not reenqueue a location.
+	auto itor = mPrevs.find(locId);
+	if (itor != mPrevs.end()) {
+		//cout << "Was Enqueued! r:" << locRow << ", c:" << locCol << endl;
 		return;
 	}
 

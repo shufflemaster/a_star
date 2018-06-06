@@ -9,6 +9,8 @@ using namespace std;
 #include "Bitmap.h"
 #include "PathFinder.h"
 
+#define VERSION "1.0.0"
+
 #define COLOR_PATH 0xFF0000FF
 
 static void colorPath(Bitmap& bmp, const list<shared_ptr<Location>> & lst, uint32_t color)
