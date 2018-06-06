@@ -7,7 +7,7 @@
 using namespace std;
 
 #include "Bitmap.h"
-#include "PathFinder.h"
+#include "BFSPathFinder.h"
 
 #define VERSION "1.0.0"
 
@@ -21,7 +21,7 @@ static void colorPath(Bitmap& bmp, const list<shared_ptr<Location>> & lst, uint3
 	}
 }
 
-static void findPath(const char * filename,
+static void findPath(PathFinder& finder, const char * filename,
 		uint32_t startRow, uint32_t startCol,
 		uint32_t endRow, uint32_t endCol)
 {
@@ -33,7 +33,6 @@ static void findPath(const char * filename,
 		return;
 	}
 
-	PathFinder finder;
 	const list<shared_ptr<Location>> & lst = finder.find(bmp, true,
 		make_shared<Location>(startRow, startCol, startRow * bmp.width() + startCol),
 		make_shared<Location>(endRow, endCol, endRow * bmp.width() + endCol));
@@ -58,7 +57,8 @@ int main()
 	uint32_t endRow = 25;
 	uint32_t endCol = 42;
 
-	findPath(filename, startRow, startCol, endRow, endCol);
+	BFSPathFinder finder;
+	findPath(finder, filename, startRow, startCol, endRow, endCol);
 
     return 0;
 }
