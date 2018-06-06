@@ -7,7 +7,17 @@
 using namespace std;
 
 #include "Bitmap.h"
+#include "PathFinder.h"
 
+#define COLOR_PATH 0xFF0000FF
+
+static void colorPath(Bitmap& bmp, const list<shared_ptr<Location>> & lst, uint32_t color)
+{
+	for (auto l : lst) {
+		cout << "Loc:[" << l->mRow << ", " << l->mCol << "]" << endl;
+		bmp.setPixel(l->mRow, l->mCol, color);
+	}
+}
 
 static void findPath(const char * filename,
 		uint32_t startRow, uint32_t startCol,
@@ -17,11 +27,24 @@ static void findPath(const char * filename,
 	cout << "Got bmp of width:" << bmp.width() << ", height:" << bmp.height() << endl;
 
 	if (bmp.width() < 1) {
+		cout << "Bitmap file:" << filename << " is invalid." << endl;
 		return;
 	}
 
+	PathFinder finder;
+	const list<shared_ptr<Location>> & lst = finder.find(bmp, true,
+		make_shared<Location>(startRow, startCol, startRow * bmp.width() + startCol),
+		make_shared<Location>(endRow, endCol, endRow * bmp.width() + endCol));
+	if (lst.size() < 1) {
+		cout << "No path was found" << endl;
+		return;
+	}
+
+	cout << "Found a path" << endl;
+	colorPath(bmp, lst, COLOR_PATH);
+
 	char name[256];
-	snprintf(name, 256, "resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
+	snprintf(name, 256, "C:\\Users\\garrieta\\Desktop\\resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
 	bmp.saveAs(name);
 }
 

@@ -329,3 +329,5 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+/a_star/resaved_64_64_32bpp.data
+/a_star/resaved_64_64_32bpp.data.raw
