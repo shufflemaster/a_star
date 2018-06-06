@@ -43,6 +43,6 @@ private:
 
 	void clear(uint32_t w, uint32_t h);
 	void pushQueue(Bitmap& bmp, int locRow, int locCol, shared_ptr<Location> prevLoc);
-	void buildThePath(shared_ptr<Location> endLoc);
+	void buildThePath(shared_ptr<Location> startLoc, shared_ptr<Location> endLoc);
 };
 

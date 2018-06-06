@@ -44,7 +44,7 @@ static void findPath(const char * filename,
 	colorPath(bmp, lst, COLOR_PATH);
 
 	char name[256];
-	snprintf(name, 256, "C:\\Users\\garrieta\\Desktop\\resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
+	snprintf(name, 256, "resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
 	bmp.saveAs(name);
 }
 

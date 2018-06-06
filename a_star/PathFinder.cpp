@@ -29,11 +29,6 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 		shared_ptr<Location> loc = mSearchQueue.front();
 		mSearchQueue.pop();
 
-		//Has this location been visited.
-		if (mVisited[loc->mId]) {
-			continue;
-		}
-
 		//Get the current color.
 		uint32_t locColor = bmp.getPixel(loc->mRow, loc->mCol);
 		if (locColor != EMPTY_COLOR) {
@@ -41,9 +36,9 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 			continue;
 		}
 
-		if (loc == endLoc) {
+		if (*loc.get() == *endLoc.get()) {
 			//Found the path
-			buildThePath(loc);
+			buildThePath(startLoc, loc);
 			break;
 		}
 
@@ -52,7 +47,6 @@ const list<shared_ptr<Location>> & PathFinder::find(Bitmap& bmp, bool paintSearc
 		if (paintSearch) bmp.setPixel(loc->mRow, loc->mCol, VISITED_COLOR);
 		mVisited[loc->mId] = true;
 
-		pushQueue(bmp, loc->mRow - 1, loc->mCol, loc);
 		pushQueue(bmp, loc->mRow - 1, loc->mCol, loc);
 		pushQueue(bmp, loc->mRow - 1, loc->mCol + 1, loc);
 		pushQueue(bmp, loc->mRow ,    loc->mCol + 1, loc);
@@ -91,17 +85,24 @@ void PathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_ptr<Locat
 		return;
 	}
 
+
 	uint32_t locId = locRow * bmp.width() + locCol;
+
+	if (mVisited[locId]) {
+		//cout << "VISITED r:" << locRow << ", c:" << locCol << endl;
+		return;
+	}
+
 	mSearchQueue.push(make_shared<Location>(locRow, locCol, locId));
 	mPrevs[locId] = prevLoc;
 }
 
-void PathFinder::buildThePath(shared_ptr<Location> loc)
+void PathFinder::buildThePath(shared_ptr<Location> startLoc, shared_ptr<Location> loc)
 {
 	mPath.push_front(loc);
 
 	auto it = mPrevs.find(loc->mId);
-	while (it != mPrevs.end()) {
+	while ((loc->mId != startLoc->mId) && (it != mPrevs.end())) {
 		loc = it->second;
 		mPath.push_front(loc);
 		it = mPrevs.find(loc->mId);
