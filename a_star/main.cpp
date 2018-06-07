@@ -8,6 +8,7 @@ using namespace std;
 
 #include "Bitmap.h"
 #include "BFSPathFinder.h"
+#include "DijkstraPathFinder.h"
 
 #define VERSION "1.0.0"
 
@@ -49,15 +50,18 @@ static void findPath(PathFinder& finder, const char * filename,
 	bmp.saveAs(name);
 }
 
+
 int main()
 {
+
 	const char * filename = "testmap.bmp";
 	uint32_t startRow = 20;
 	uint32_t startCol = 10;
 	uint32_t endRow = 25;
 	uint32_t endCol = 42;
 
-	BFSPathFinder finder;
+	//BFSPathFinder finder;
+	DijkstraPathFinder finder;
 	findPath(finder, filename, startRow, startCol, endRow, endCol);
 
     return 0;

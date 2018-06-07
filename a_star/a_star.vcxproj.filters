@@ -33,6 +33,9 @@
     <ClInclude Include="BFSPathFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DijkstraPathFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BFSPathFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DijkstraPathFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
