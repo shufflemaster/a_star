@@ -9,6 +9,7 @@ using namespace std;
 #include "Bitmap.h"
 #include "BFSPathFinder.h"
 #include "DijkstraPathFinder.h"
+#include "PerfCounter.h"
 
 #define VERSION "1.0.0"
 
@@ -17,9 +18,36 @@ using namespace std;
 static void colorPath(Bitmap& bmp, const list<shared_ptr<Location>> & lst, uint32_t color)
 {
 	for (auto l : lst) {
-		cout << "Loc:[" << l->mRow << ", " << l->mCol << "]" << endl;
 		bmp.setPixel(l->mRow, l->mCol, color);
 	}
+}
+
+static void dumpPath(const list<shared_ptr<Location>> & lst, Bitmap& bmp, const CPerfCounter& perfCounter)
+{
+	char name[256];
+	snprintf(name, 256, "path_stats_%u_%u.txt", bmp.width(), bmp.height());
+	FILE* fp = nullptr;
+
+	do {
+		fp = fopen(name, "wt");
+		if (!fp) {
+			cout << "Failed to create stat file:" << name << endl;
+			break;
+		}
+
+		perfCounter.dump(1, fp);
+		fprintf(fp, "%zu Locations:\n", lst.size());
+		int i = 0;
+		for (auto loc : lst) {
+			fprintf(fp, "[%d]: r=%d, c=%d, cost=%u\n", i, loc->mRow, loc->mCol, loc->mCost);
+			i++;
+		}
+
+		cout << "Successfully created " << name << endl;
+
+	} while (0);
+
+	if (fp) fclose(fp);
 }
 
 static void findPath(PathFinder& finder, const char * filename,
@@ -43,11 +71,14 @@ static void findPath(PathFinder& finder, const char * filename,
 	}
 
 	cout << "Found a path" << endl;
+
 	colorPath(bmp, lst, COLOR_PATH);
 
 	char name[256];
 	snprintf(name, 256, "resaved_%u_%u_32bpp.data", bmp.width(), bmp.height());
 	bmp.saveAs(name);
+
+	dumpPath(lst, bmp, finder.getPerfCounter());
 }
 
 
@@ -60,8 +91,8 @@ int main()
 	uint32_t endRow = 25;
 	uint32_t endCol = 42;
 
-	//BFSPathFinder finder;
-	DijkstraPathFinder finder;
+	BFSPathFinder finder;
+	//DijkstraPathFinder finder;
 	findPath(finder, filename, startRow, startCol, endRow, endCol);
 
     return 0;

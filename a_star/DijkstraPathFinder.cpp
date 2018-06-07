@@ -24,6 +24,8 @@ const list<shared_ptr<Location>> & DijkstraPathFinder::find(Bitmap& bmp, bool pa
 {
 	clear(bmp.width(), bmp.height());
 
+	mPerfCounter.start();
+
 	//Make sure startLoc cost is 0.
 	startLoc->mCost = 0;
 	mPriorityQueue.push(startLoc);
@@ -34,6 +36,7 @@ const list<shared_ptr<Location>> & DijkstraPathFinder::find(Bitmap& bmp, bool pa
 
 		if (*loc.get() == *endLoc.get()) {
 			//Found the path
+			mPerfCounter.stop();
 			buildThePath(startLoc, loc);
 			break;
 		}
@@ -53,6 +56,7 @@ const list<shared_ptr<Location>> & DijkstraPathFinder::find(Bitmap& bmp, bool pa
 
 		mVisited[loc->mId] = true;
 	}
+
 
 	return mPath;
 }

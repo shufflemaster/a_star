@@ -22,6 +22,8 @@ const list<shared_ptr<Location>> & BFSPathFinder::find(Bitmap& bmp, bool paintSe
 {
 	clear(bmp.width(), bmp.height());
 
+	mPerfCounter.start();
+
 	mSearchQueue.push(startLoc);
 
 	while (!mSearchQueue.empty()) {
@@ -29,6 +31,7 @@ const list<shared_ptr<Location>> & BFSPathFinder::find(Bitmap& bmp, bool paintSe
 		mSearchQueue.pop();
 
 		if (*loc.get() == *endLoc.get()) {
+			mPerfCounter.stop();
 			//Found the path
 			buildThePath(startLoc, loc);
 			break;

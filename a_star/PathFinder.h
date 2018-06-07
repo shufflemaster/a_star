@@ -7,6 +7,8 @@
 #include <memory>
 #include <map>
 
+#include "PerfCounter.h"
+
 using namespace std;
 
 class Bitmap;
@@ -39,5 +41,9 @@ public:
 	virtual ~PathFinder();
 
 	virtual const list<shared_ptr<Location>> & find(Bitmap& bmp, bool paintSearch, shared_ptr<Location> startLoc, shared_ptr<Location> endLoc) = 0;
+	const CPerfCounter& getPerfCounter() { return mPerfCounter; }
+
+protected:
+	CPerfCounter mPerfCounter;
 };
 

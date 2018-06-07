@@ -145,6 +145,7 @@
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="DijkstraPathFinder.h" />
     <ClInclude Include="PathFinder.h" />
+    <ClInclude Include="PerfCounter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
