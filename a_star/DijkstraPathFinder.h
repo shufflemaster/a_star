@@ -1,5 +1,6 @@
 #pragma once
 #include "PathFinder.h"
+#include "MinPriorityQueue.h"
 
 struct Compare {
 	bool operator()(const shared_ptr<Location>& left, const shared_ptr<Location>& right)
@@ -23,7 +24,7 @@ private:
 	//The resulting path is stored here.
 	list<shared_ptr<Location>> mPath;
 
-	priority_queue<shared_ptr<Location>, std::vector<shared_ptr<Location>>, Compare> mPriorityQueue;
+	MinPriorityQueue<shared_ptr<Location>, std::vector<shared_ptr<Location>>, Compare> mPriorityQueue;
 
 	//Here we record if we have visited a location or not.
 	vector<bool> mVisited;

@@ -114,10 +114,16 @@ void DijkstraPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_p
 	else {
 		loc = itor->second;
 	}
+
 	uint32_t newCost = prevLoc->mCost + EDGE_COST;
 	if (newCost < loc->mCost) {
 		loc->mCost = newCost;
 		mPrevs[locId] = prevLoc;
+		//Because we updated the cost of this node,
+		//we need to resort the min priority queue.
+		if (!shouldPush) {
+			mPriorityQueue.resort();
+		}
 	}
 
 	if (shouldPush) mPriorityQueue.push(loc);

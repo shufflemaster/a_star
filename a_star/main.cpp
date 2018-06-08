@@ -82,17 +82,46 @@ static void findPath(PathFinder& finder, const char * filename,
 }
 
 
+#if 0
+static void testMinPriorityQueue()
+{
+	MinPriorityQueue<shared_ptr<Location>, std::vector<shared_ptr<Location>>,
+		Compare > myQueue;
+	auto a = make_shared<Location>(1, 1, 1, 7);
+	auto b = make_shared<Location>(2, 2, 2, 8);
+	auto c = make_shared<Location>(3, 3, 3, 9);
+	auto d = make_shared<Location>(4, 4, 4, 10);
+	auto e = make_shared<Location>(5, 5, 5, 11);
+
+	myQueue.push(e);
+	myQueue.push(d);
+	myQueue.push(c);
+	myQueue.push(b);
+	myQueue.push(a);
+
+	cout << "queue size is:" << myQueue.size() << endl;
+
+	e->mCost = 6;
+	myQueue.resort();
+
+	while (!myQueue.empty()) {
+		auto var = myQueue.top();
+		myQueue.pop();
+		cout << *var.get() << endl;
+	}
+}
+#endif
+
 int main()
 {
-
 	const char * filename = "testmap.bmp";
 	uint32_t startRow = 20;
 	uint32_t startCol = 10;
 	uint32_t endRow = 25;
 	uint32_t endCol = 42;
 
-	BFSPathFinder finder;
-	//DijkstraPathFinder finder;
+	//BFSPathFinder finder;
+	DijkstraPathFinder finder;
 	findPath(finder, filename, startRow, startCol, endRow, endCol);
 
     return 0;

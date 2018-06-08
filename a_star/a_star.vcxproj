@@ -144,6 +144,7 @@
     <ClInclude Include="BFSPathFinder.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="DijkstraPathFinder.h" />
+    <ClInclude Include="MinPriorityQueue.h" />
     <ClInclude Include="PathFinder.h" />
     <ClInclude Include="PerfCounter.h" />
     <ClInclude Include="stdafx.h" />

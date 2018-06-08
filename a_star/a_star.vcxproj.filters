@@ -39,6 +39,9 @@
     <ClInclude Include="PerfCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MinPriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
