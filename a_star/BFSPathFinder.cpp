@@ -83,7 +83,7 @@ void BFSPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_ptr<Lo
 
 	//Get the current color.
 	uint32_t locColor = bmp.getPixel(locRow, locCol);
-	if (locColor != EMPTY_COLOR) {
+	if ((locColor != EMPTY_COLOR) && (locColor != VISITED_COLOR)) {
 		//This location is a wall.
 		return;
 	}

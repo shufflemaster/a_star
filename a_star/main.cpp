@@ -9,6 +9,7 @@ using namespace std;
 #include "Bitmap.h"
 #include "BFSPathFinder.h"
 #include "DijkstraPathFinder.h"
+#include "AstarPathFinder.h"
 #include "PerfCounter.h"
 
 #define VERSION "1.0.0"
@@ -39,7 +40,7 @@ static void dumpPath(const list<shared_ptr<Location>> & lst, Bitmap& bmp, const 
 		fprintf(fp, "%zu Locations:\n", lst.size());
 		int i = 0;
 		for (auto loc : lst) {
-			fprintf(fp, "[%d]: r=%d, c=%d, cost=%u\n", i, loc->mRow, loc->mCol, loc->mCost);
+			fprintf(fp, "[%d]: r=%d, c=%d, cost=%u\n", i, loc->mRow, loc->mCol, loc->getCostG());
 			i++;
 		}
 
@@ -121,7 +122,8 @@ int main()
 	uint32_t endCol = 42;
 
 	//BFSPathFinder finder;
-	DijkstraPathFinder finder;
+	//DijkstraPathFinder finder;
+	AstarPathFinder finder;
 	findPath(finder, filename, startRow, startCol, endRow, endCol);
 
     return 0;

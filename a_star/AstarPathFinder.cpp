@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DijkstraPathFinder.h"
+#include "AstarPathFinder.h"
 
 #include "Bitmap.h"
 
@@ -10,24 +10,25 @@ using namespace std;
 
 #define EDGE_COST 1
 
-DijkstraPathFinder::DijkstraPathFinder()
+AstarPathFinder::AstarPathFinder()
 {
 }
 
 
-DijkstraPathFinder::~DijkstraPathFinder()
+AstarPathFinder::~AstarPathFinder()
 {
 }
 
-const list<shared_ptr<Location>> & DijkstraPathFinder::find(Bitmap& bmp, bool paintSearch,
+const list<shared_ptr<Location>> & AstarPathFinder::find(Bitmap& bmp, bool paintSearch,
 	shared_ptr<Location> startLoc, shared_ptr<Location> endLoc)
 {
 	clear(bmp.width(), bmp.height());
 
 	mPerfCounter.start();
 
+	mDestination = endLoc;
 	//Make sure startLoc cost is 0.
-	startLoc->setCosts(0);
+	startLoc->setCosts(0, 0);
 	mPriorityQueue.push(startLoc);
 
 	while (!mPriorityQueue.empty()) {
@@ -61,7 +62,7 @@ const list<shared_ptr<Location>> & DijkstraPathFinder::find(Bitmap& bmp, bool pa
 	return mPath;
 }
 
-void DijkstraPathFinder::clear(uint32_t w, uint32_t h)
+void AstarPathFinder::clear(uint32_t w, uint32_t h)
 {
 	while (!mPriorityQueue.empty()) {
 		mPriorityQueue.pop();
@@ -76,7 +77,8 @@ void DijkstraPathFinder::clear(uint32_t w, uint32_t h)
 	}
 }
 
-void DijkstraPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_ptr<Location> prevLoc)
+void AstarPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol,
+								shared_ptr<Location>& prevLoc)
 {
 	if ((locRow < 0) || (locRow >= (int)bmp.height())) {
 		return;
@@ -88,7 +90,7 @@ void DijkstraPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_p
 
 	//Get the current color.
 	uint32_t locColor = bmp.getPixel(locRow, locCol);
-	if ((locColor != EMPTY_COLOR) && (locColor != VISITED_COLOR)) {
+	if ((locColor != EMPTY_COLOR) && (locColor != VISITED_COLOR)){
 		//This location is a wall.
 		return;
 	}
@@ -115,9 +117,15 @@ void DijkstraPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_p
 		loc = itor->second;
 	}
 
-	uint32_t newCost = prevLoc->getCostG() + EDGE_COST;
-	if (newCost < loc->getCostG()) {
-		loc->setCosts(newCost);
+	//Calculate the costG.
+	uint32_t costG = prevLoc->getCostG() + EDGE_COST;
+	//Calculate the costH.
+	//Let's do manhattan distance.
+	uint32_t costH = calcCostH(locRow, locCol);
+	uint32_t costF = costG + costH;
+
+	if (costF < loc->getCostF()) {
+		loc->setCosts(costG, costH);
 		mPrevs[locId] = prevLoc;
 		//Because we updated the cost of this node,
 		//we need to resort the min priority queue.
@@ -129,7 +137,7 @@ void DijkstraPathFinder::pushQueue(Bitmap& bmp, int locRow, int locCol, shared_p
 	if (shouldPush) mPriorityQueue.push(loc);
 }
 
-void DijkstraPathFinder::buildThePath(shared_ptr<Location> startLoc, shared_ptr<Location> loc)
+void AstarPathFinder::buildThePath(shared_ptr<Location> startLoc, shared_ptr<Location> loc)
 {
 	mPath.push_front(loc);
 
@@ -139,4 +147,17 @@ void DijkstraPathFinder::buildThePath(shared_ptr<Location> startLoc, shared_ptr<
 		mPath.push_front(loc);
 		it = mPrevs.find(loc->mId);
 	}
+}
+
+static inline uint32_t ABS(int val)
+{
+	if (val >= 0) return val;
+	return (uint32_t)-val;
+}
+
+uint32_t AstarPathFinder::calcCostH(int fromRow, int fromCol)
+{
+	//Our Heuristic Cost will be based on manhattan distance to the
+	//destination location.
+	return ABS(mDestination->mRow - fromRow) + ABS(mDestination->mCol - fromCol);
 }

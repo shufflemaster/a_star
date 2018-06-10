@@ -13,15 +13,13 @@ using namespace std;
 
 class Bitmap;
 
-struct Location
+class Location
 {
-	Location(int row, int col, uint32_t id, uint32_t cost=0xFFFFFFFF) : mRow(row), mCol(col), mId(id), mCost(cost){
+public:
+	Location(int row, int col, uint32_t id, uint32_t costG= MAXDWORD32, uint32_t costH = MAXDWORD32) :
+		mRow(row), mCol(col), mId(id), mGcost(costG), mHcost(costH) {
+		calcCostF();
 	}
-
-	int mRow;
-	int mCol;
-	uint32_t mId;
-	uint32_t mCost; //Added for Dijkstra's algorithm.
 
 	bool operator==(const Location& other) {
 		return (mRow == other.mRow) && (mCol == other.mCol);
@@ -31,6 +29,36 @@ struct Location
 	{
 		os << "Loc [row:" << loc.mRow << ", col:" << loc.mCol << "]";
 		return os;
+	}
+
+	void setCosts(uint32_t costG, uint32_t costH= MAXDWORD32) {
+		mGcost = costG;
+		mHcost = costH;
+		calcCostF();
+	}
+
+	uint32_t getCostG() { return mGcost; }
+	uint32_t getCostH() { return mHcost; }
+	uint32_t getCostF() { return mFcost; }
+
+	int mRow;
+	int mCol;
+	uint32_t mId;
+
+private:
+	Location();
+
+	uint32_t mGcost; //Added for Dijkstra's algorithm.
+	uint32_t mHcost; //Added for A* algorithm.
+	uint32_t mFcost; //Added for A* Algorithm. mFcost = mGcost + mHcost.
+
+	void calcCostF() {
+		if ((mHcost == MAXDWORD32) || ((mGcost == MAXDWORD32))) {
+			mFcost = MAXDWORD32;
+		}
+		else {
+			mFcost = mGcost + mHcost;
+		}
 	}
 };
 

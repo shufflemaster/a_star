@@ -141,6 +141,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AstarPathFinder.h" />
     <ClInclude Include="BFSPathFinder.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="DijkstraPathFinder.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AstarPathFinder.cpp" />
     <ClCompile Include="BFSPathFinder.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="DijkstraPathFinder.cpp" />
